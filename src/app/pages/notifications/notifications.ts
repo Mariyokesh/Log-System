@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MockDataService, Notification } from '../../services/mock-data';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { MockDataService } from '../../services/mock-data';
 
 @Component({
   selector: 'app-notifications',
@@ -10,26 +8,21 @@ import { map } from 'rxjs/operators';
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss'
 })
-export class Notifications implements OnInit {
-  notifications$: Observable<Notification[]>;
-  unreadNotifications$: Observable<Notification[]>;
-  readNotifications$: Observable<Notification[]>;
-  activeTab: string = 'unread';
+export class Notifications {
+  private mockDataService = inject(MockDataService);
+  
+  activeTab = signal<'unread' | 'read'>('unread');
 
-  constructor(private mockDataService: MockDataService) {
-    this.notifications$ = this.mockDataService.getNotifications();
-    this.unreadNotifications$ = this.notifications$.pipe(
-      map(notifications => notifications.filter(n => !n.isRead))
-    );
-    this.readNotifications$ = this.notifications$.pipe(
-      map(notifications => notifications.filter(n => n.isRead))
-    );
-  }
+  unreadNotifications = computed(() => 
+    this.mockDataService.notifications().filter(n => !n.isRead)
+  );
 
-  ngOnInit(): void {}
+  readNotifications = computed(() => 
+    this.mockDataService.notifications().filter(n => n.isRead)
+  );
 
-  setActiveTab(tab: string) {
-    this.activeTab = tab;
+  setActiveTab(tab: 'unread' | 'read') {
+    this.activeTab.set(tab);
   }
 
   toggleNotification(id: number) {
