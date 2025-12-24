@@ -1,0 +1,42 @@
+<h2>Activity Logs</h2>
+
+<div class="row mb-3">
+  <div class="col-md-4">
+    <label class="form-label">Filter by User</label>
+    <input type="text" class="form-control" [(ngModel)]="userFilterValue" (ngModelChange)="onUserFilterChange($event)" placeholder="Search User...">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Filter by Module</label>
+    <input type="text" class="form-control" [(ngModel)]="moduleFilterValue" (ngModelChange)="onModuleFilterChange($event)" placeholder="Search Module...">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Filter by Date</label>
+    <input type="date" class="form-control" [(ngModel)]="dateFilterValue" (ngModelChange)="onDateFilterChange($event)">
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Action</th>
+        <th>User</th>
+        <th>Module</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of filteredLogs$ | async">
+        <td>{{ log.id }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.user }}</td>
+        <td>{{ log.module }}</td>
+        <td>{{ log.timestamp | date:'medium' }}</td>
+      </tr>
+      <tr *ngIf="(filteredLogs$ | async)?.length === 0">
+        <td colspan="5" class="text-center">No logs found matching criteria.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
