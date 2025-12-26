@@ -30,7 +30,7 @@
       @for (log of filteredLogs(); track log.id) {
         <tr>
           <td>{{ log.id }}</td>
-          <td>{{ log.action }}</td>
+           <td>{{ formatAction(log.action) }}</td>
           <td>{{ log.user }}</td>
           <td>{{ log.module }}</td>
           <td>{{ log.timestamp | date:'medium' }}</td>

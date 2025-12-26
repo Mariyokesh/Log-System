@@ -8,9 +8,22 @@ export interface Notification {
   type: 'info' | 'success' | 'warning' | 'error';
 }
 
+export enum ADAction {
+  USER_LOGIN = 'USER_LOGIN',
+  USER_LOGOUT = 'USER_LOGOUT',
+  USER_CREATE = 'USER_CREATE',
+  USER_DELETE = 'USER_DELETE',
+  USER_UPDATE = 'USER_UPDATE',
+  PASSWORD_RESET = 'PASSWORD_RESET',
+  GROUP_ADD = 'GROUP_ADD',
+  GROUP_REMOVE = 'GROUP_REMOVE',
+  ACCOUNT_LOCK = 'ACCOUNT_LOCK',
+  ACCOUNT_UNLOCK = 'ACCOUNT_UNLOCK'
+}
+
 export interface ActivityLog {
   id: number;
-  action: string;
+  action: ADAction;
   user: string;
   module: string;
   timestamp: Date;
@@ -29,11 +42,11 @@ export class MockDataService {
   ]);
   
   private _logs = signal<ActivityLog[]>([
-    { id: 1, action: 'Login', user: 'admin', module: 'Auth', timestamp: new Date() },
-    { id: 2, action: 'Create User', user: 'admin', module: 'User Management', timestamp: new Date(Date.now() - 1000000) },
-    { id: 3, action: 'Logout', user: 'guest', module: 'Auth', timestamp: new Date(Date.now() - 5000000) },
-    { id: 4, action: 'View Report', user: 'manager', module: 'Reports', timestamp: new Date(Date.now() - 7200000) },
-    { id: 5, action: 'Update Settings', user: 'admin', module: 'Settings', timestamp: new Date(Date.now() - 10000000) }
+    { id: 1, action: ADAction.USER_LOGIN, user: 'admin', module: 'Auth', timestamp: new Date() },
+    { id: 2, action: ADAction.USER_CREATE, user: 'admin', module: 'User Management', timestamp: new Date(Date.now() - 1000000) },
+    { id: 3, action: ADAction.USER_LOGOUT, user: 'guest', module: 'Auth', timestamp: new Date(Date.now() - 5000000) },
+    { id: 4, action: ADAction.GROUP_ADD, user: 'manager', module: 'Reports', timestamp: new Date(Date.now() - 7200000) },
+    { id: 5, action: ADAction.PASSWORD_RESET, user: 'admin', module: 'Settings', timestamp: new Date(Date.now() - 10000000) }
   ]);
 
   readonly notifications = this._notifications.asReadonly();
@@ -83,7 +96,7 @@ export class MockDataService {
   private simulateNewLog() {
     this._logs.update(logs => {
       const id = logs.length > 0 ? Math.max(...logs.map(l => l.id)) + 1 : 1;
-      const actions = ['Login', 'Logout', 'Update Profile', 'Delete Item', 'View Report'];
+      const actions = Object.values(ADAction);
       const modules = ['Auth', 'User Management', 'Reports', 'Settings'];
       const users = ['admin', 'manager', 'user1', 'guest'];
   

@@ -2,6 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MockDataService } from '../../services/mock-data';
+import { ADAction } from '../../services/mock-data';
+
 
 @Component({
   selector: 'app-activity-logs',
@@ -40,4 +42,15 @@ export class ActivityLogs {
       return matchUser && matchModule && matchDate;
     });
   });
+
+formatAction(action: ADAction | string): string {
+    return action
+      .toLowerCase()
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+  
 }
+
+
